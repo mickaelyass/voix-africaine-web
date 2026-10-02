@@ -1,7 +1,7 @@
 # Voix Africaine — Frontend
 
 Application React (Create React App, TypeScript + JavaScript) qui consomme l'API
-FastAPI du dossier `../voix_africaine`.
+FastAPI du dossier `../voix-africaine-api`.
 
 ## Configuration locale
 
@@ -23,23 +23,23 @@ Un modèle est fourni : `cp .env.example .env`.
 
 ```bash
 # Terminal 1 — API + MongoDB local
-cd ../voix_africaine
+cd ../voix-africaine-api
 env/bin/python -m scripts.init_db      # une seule fois : index + admin par défaut
 ./scripts/run_dev.sh                   # http://127.0.0.1:8000
 
 # Terminal 2 — frontend
-cd ../voix_africaine_frontend
+cd ../voix-africaine-web
 npm install
 npm start                              # http://localhost:3000
 ```
 
 Compte administrateur créé par défaut : `admin@voixafricaine.com` / `Admin@Voix2026`
-(voir `voix_africaine/readme.md`).
+(voir `../voix-africaine-api/README.md`).
 
 ## Vérifier la liaison avec l'API
 
 ```bash
-cd ../voix_africaine
+cd ../voix-africaine-api
 env/bin/python -m scripts.smoke_test
 ```
 
