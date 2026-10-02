@@ -1,27 +1,39 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# ============ DEPENDANCES ============
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# ============ PRODUCTION ============
+/build
+/dist
+
+# ============ TESTS ============
 /coverage
 
-# production
-/build
-
-# misc
-.DS_Store
 # ============ SECRETS — jamais sur GitHub ============
-# Le .env réel (dev local) et toutes ses variantes restent locaux.
 # En production (Vercel/Netlify/Render...), renseigner REACT_APP_API_URL
 # directement dans le dashboard — aucun fichier .env n'est envoyé.
 .env
 .env.*
 !.env.example
 
+# ============ CACHES ============
+.eslintcache
+.cache/
+node_modules/.cache/
+
+# ============ LOGS ============
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
+# ============ IDE / OS ============
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ============ DEPLOIEMENT ============
+.vercel
+.netlify
