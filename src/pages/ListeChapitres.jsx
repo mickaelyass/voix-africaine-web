@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import AudioRecorderUploader from './AudioRecorderUploader';
+import TextPager from '../components/livres/TextPager';
 import axios from 'axios';
 
 const ListeChapitres = ({ chapitres, user, onTogglePublic, onDelete, onChapitresUpdated }) => {
@@ -100,7 +101,9 @@ const ListeChapitres = ({ chapitres, user, onTogglePublic, onDelete, onChapitres
             <div className="card"><div className="card-body">
               <p className="eyebrow">Chapitre {chapitreActif.numero}</p>
               <h3 className="mt-1 font-display text-2xl font-black">{chapitreActif.titre}</h3>
-              <p className="mt-4 whitespace-pre-line text-[15px] leading-relaxed">{chapitreActif.contenu_texte}</p>
+              <div className="mt-4">
+                <TextPager text={chapitreActif.contenu_texte} title={chapitreActif.titre} />
+              </div>
               {chapitreActif.audio_url && (
                 <div className="mt-5 rounded-2xl bg-ink-950 p-4 text-white">
                   <p className="mb-3 text-xs font-bold uppercase text-gold-300">Lecture audio</p>

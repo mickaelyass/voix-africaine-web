@@ -19,6 +19,9 @@ export default function Sidebar({ user, onNavigate }) {
         {user?.role === 'admin' && (
           <li><NavLink to="/dashboard/ajouter-livre" className={linkClass} onClick={onNavigate}><span>+</span> Ajouter un livre</NavLink></li>
         )}
+        {user?.role === 'admin' && (
+          <li><NavLink to="/dashboard/utilisateurs" className={linkClass} onClick={onNavigate}><span>👥</span> Utilisateurs</NavLink></li>
+        )}
       </ul>
       <div className="mt-auto rounded-2xl border border-ink-900/10 bg-sand-50 px-3.5 py-3.5">
         <p className="truncate text-sm font-black text-ink-900">{user?.full_name || 'Utilisateur'}</p>
