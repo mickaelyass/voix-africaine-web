@@ -3,6 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useCallback,
   ReactNode,
 } from "react";
 
@@ -28,6 +29,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  error: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (data: {
     email: string;
@@ -35,6 +37,7 @@ interface AuthContextType {
     full_name: string;
   }) => Promise<void>;
   logout: () => void;
+  clearError: () => void;
 }
 
 
@@ -60,6 +63,8 @@ export function AuthProvider({
   const [user, setUser] = useState<User | null>(null);
 
   const [loading, setLoading] = useState(true);
+
+  const [error, setError] = useState<string | null>(null);
 
 
   // ==========================================
@@ -90,11 +95,11 @@ export function AuthProvider({
 
         setUser(userData);
 
-      } catch (error) {
+      } catch (error: any) {
 
         console.error(
           "Impossible de restaurer la session :",
-          error
+          error?.message || error
         );
 
         localStorage.removeItem(
@@ -125,23 +130,39 @@ export function AuthProvider({
     password: string
   ) => {
 
-    const data = await loginService({
-      username: email,
-      password,
-    });
+    setError(null);
+
+    try {
+
+      const data = await loginService({
+        username: email,
+        password,
+      });
 
 
-    // Stockage du JWT
-    localStorage.setItem(
-      "access_token",
-      data.access_token
-    );
+      // Stockage du JWT
+      localStorage.setItem(
+        "access_token",
+        data.access_token
+      );
 
 
-    // Récupération de l'utilisateur connecté
-    const userData = await getCurrentUser();
+      // Récupération de l'utilisateur connecté
+      const userData = await getCurrentUser();
 
-    setUser(userData);
+      setUser(userData);
+
+    } catch (err: any) {
+
+      // Message d'erreur clair pour l'utilisateur
+      const msg =
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Échec de la connexion. Vérifiez vos identifiants.";
+
+      setError(msg);
+      throw new Error(msg);
+    }
   };
 
 
@@ -157,14 +178,29 @@ export function AuthProvider({
     }
   ) => {
 
-    // Création du compte
-    await registerService(formData);
+    setError(null);
 
-    // Connexion automatique
-    await login(
-      formData.email,
-      formData.password
-    );
+    try {
+
+      // Création du compte
+      await registerService(formData);
+
+      // Connexion automatique
+      await login(
+        formData.email,
+        formData.password
+      );
+
+    } catch (err: any) {
+
+      const msg =
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Échec de l'inscription.";
+
+      setError(msg);
+      throw new Error(msg);
+    }
   };
 
 
@@ -179,7 +215,17 @@ export function AuthProvider({
     );
 
     setUser(null);
+    setError(null);
   };
+
+
+  // ==========================================
+  // CLEAR ERROR
+  // ==========================================
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
 
 
   // ==========================================
@@ -191,9 +237,11 @@ export function AuthProvider({
       value={{
         user,
         loading,
+        error,
         login,
         register,
         logout,
+        clearError,
       }}
     >
       {children}

@@ -40,6 +40,8 @@ export const login = async (credentials: {
     credentials.password
   );
 
+  const startTime = performance.now();
+
   const response = await apiClient.post(
     "/auth/token",
     formData,
@@ -48,8 +50,13 @@ export const login = async (credentials: {
         "Content-Type":
           "application/x-www-form-urlencoded",
       },
+      // Timeout spécifique pour le login (couvre les cold starts)
+      timeout: 20000,
     }
   );
+
+  const duration = Math.round(performance.now() - startTime);
+  console.info(`[Auth] Login réussi en ${duration}ms`);
 
   return response.data;
 };
@@ -76,4 +83,13 @@ export const getCurrentUser = async () => {
   );
 
   return response.data;
+};
+
+
+// ==========================================
+// DÉCONNEXION
+// ==========================================
+
+export const logout = () => {
+  localStorage.removeItem("access_token");
 };
